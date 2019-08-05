@@ -1,0 +1,40 @@
+#zf190805.1609
+
+# sources: https://hub.docker.com/_/influxdb
+
+version: '3'
+
+services:
+  imfluxdb:
+    image: influxdb
+    ports: 
+      - "8086:8086"
+    restart: always
+    volumes:
+      - influxdb:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "9092:3000"
+    restart: always
+    volumes:
+      - grafdata:/var/lib/grafana
+    # environment:
+    #   GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
+    #   GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/admin_password
+    # secrets:
+    #   - admin_password
+
+volumes:
+  influxdb:
+    driver: local
+  grafdata:
+    driver: local
+
+# secrets:
+#   admin_password:
+#     file: ./secrets/admin_password.txt
+
+#   dataexample:
+#     image: 
