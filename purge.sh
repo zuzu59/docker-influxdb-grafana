@@ -1,6 +1,6 @@
 #!/bin/bash
 #Petit script pour nettoyer tout le binz
-#zf190805.1630
+#zf190805.1710
 
 #source: http://patatos.over-blog.com/2016/09/commet-faire-du-menage-dans-les-conteneurs-et-images-docker.html
 
@@ -19,8 +19,7 @@ docker volume ls
 echo -e "
 Suprime tous les dossiers data
 "
-sudo rm -rf grafana_data
-sudo rm -rf influsxdb_data
+sudo rm -rf influxdb_data chronograf_data grafana_data
 
 
 
