@@ -1,17 +1,18 @@
-#zf190805.1609
+#zf190805.1627
 
 # sources: https://hub.docker.com/_/influxdb
 
 version: '3'
 
 services:
-  imfluxdb:
+  influxdb:
     image: influxdb
     ports: 
       - "8086:8086"
     restart: always
     volumes:
-      - influxdb:/var/lib/influxdb
+      - $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - $PWD/influxdb_data:/var/lib/influxdb
 
   grafana:
     image: grafana/grafana
@@ -19,18 +20,18 @@ services:
       - "9092:3000"
     restart: always
     volumes:
-      - grafdata:/var/lib/grafana
+      - $PWD/grafana_data:/var/lib/grafana
     # environment:
     #   GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
     #   GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/admin_password
     # secrets:
     #   - admin_password
 
-volumes:
-  influxdb:
-    driver: local
-  grafdata:
-    driver: local
+#volumes:
+#  influxdb:
+#    driver: local
+#  grafdata:
+#    driver: local
 
 # secrets:
 #   admin_password:
