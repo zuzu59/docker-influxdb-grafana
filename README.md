@@ -35,4 +35,14 @@ example.sh
 ```
 
 
-zf190805.1607
+## Documentation
+
+https://docs.influxdata.com/influxdb/v1.7/administration/security/
+https://docs.influxdata.com/influxdb/v1.7/administration/authentication_and_authorization/#set-up-authentication
+https://docs.influxdata.com/influxdb/v1.7/administration/authentication_and_authorization/#user-management-commands
+https://docs.influxdata.com/influxdb/v1.7/tools/api/#write-http-endpoint
+https://docs.influxdata.com/influxdb/v1.7/guides/writing_data/
+https://docs.influxdata.com/influxdb/v1.7/tools/shell/
+
+
+zf190806.1141
