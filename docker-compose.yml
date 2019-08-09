@@ -1,4 +1,4 @@
-#zf190805.1708
+#zf190809.1118
 
 # sources: https://hub.docker.com/_/influxdb
 
@@ -19,7 +19,7 @@ services:
   chronograf:
     image: chronograf
     ports: 
-      - "8888:8888"
+      - "127.0.0.1:8888:8888"
     restart: always
     volumes:
       - $PWD/chronograf_data:/var/lib/chronograf
