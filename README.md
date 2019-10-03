@@ -22,7 +22,6 @@ Pour l'arrêter sans effacer les données
 
 ## Astuces
 ### Partage des secrets dans ce README !
-Ce qui est bien avec la DB d'InfluxDB, c'est que l'on peut tout gérer via des requêtes *curl* !<br>
 Afin de ne pas partager des secrets dans ce README ;-) les secrets **doivent** être mis **avant** dans des variables d'environnement avec ce petit script que l'on gardera dans son Keypass préféré:
 
 ```
@@ -61,13 +60,14 @@ source /keybase/xxx...xx/influxdb_secrets.sh
 ```
 
 
-
-
 ## Configuration de la base de données influxdb
+Ce qui est bien avec la DB d'InfluxDB, c'est que l'on peut tout gérer via des requêtes *curl* !<br>
+Il nous suffit donc de rentrer les commandes suivantes pour:
 
-
-Pour accéder à InfluxDb, il nous suffit de rentrer la commande influx.
-Il faudra d’abord se créer un compte administrateur avec la commande suivante.
+### Création d'un compte administrateur
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin" --data-urlencode "q=show databases"
+```
 
 CREATE USER <Utilisateur> WITH PASSWORD '<MotDePasse>' WITH ALL PRIVILEGE
 Puis une base de données ou seront stockée tous nos enregistrements. Le schéma de stockage que vous souhaitez utilisez reste un choix personnel (Une base pour tous les enregistrements, une base par client, par pays etc)
