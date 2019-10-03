@@ -2,12 +2,99 @@
 
 Système complet de InfluxDB/Grafana pour pouvoir envoyer des données à InfluxDB via un simple 'curl'.
 
-## Utilisation
+
+README en cours d'élaboration !
+zf191003.1558
+
+
+## Installation et utilisation
 Simplement faire:
 
 ```
 ./start.sh
 ```
+
+Pour l'arrêter sans effacer les données
+```
+./stop.sh
+```
+
+
+## Astuces
+### Partage des secrets dans ce README !
+Ce qui est bien avec la DB d'InfluxDB, c'est que l'on peut tout gérer via des requêtes *curl* !<br>
+Afin de ne pas partager des secrets dans ce README ;-) les secrets **doivent** être mis **avant** dans des variables d'environnement avec ce petit script que l'on gardera dans son Keypass préféré:
+
+```
+cat influxdb_secrets.sh
+---
+#!/bin/bash
+#Petit script pour configurer les secrets utilisés pour le système de monitoring Telegraf/InfluxDB/Grafana
+#zf191003.1608
+
+#source: générateur de password, https://www.pwdgen.org/
+
+# utilisation:
+# source /Keybase/xx..xx/influxdb_secrets.sh
+
+export dbflux_srv_host=xxx
+export dbflux_srv_user=xxx
+export dbflux_port=8086
+export dbflux_u_admin=xxx
+export dbflux_p_admin=xxx
+export dbflux_u_=xxx
+export dbflux_p_=xxx
+
+echo -e "
+
+Les secrets sont:
+"
+env |grep dbflux
+echo -e "
+"
+---
+```
+
+Après il suffira, juste avant d'utiliser ces exemples, de faire un:
+```
+source /keybase/xxx...xx/influxdb_secrets.sh
+```
+
+
+
+
+## Configuration de la base de données influxdb
+
+
+Pour accéder à InfluxDb, il nous suffit de rentrer la commande influx.
+Il faudra d’abord se créer un compte administrateur avec la commande suivante.
+
+CREATE USER <Utilisateur> WITH PASSWORD '<MotDePasse>' WITH ALL PRIVILEGE
+Puis une base de données ou seront stockée tous nos enregistrements. Le schéma de stockage que vous souhaitez utilisez reste un choix personnel (Une base pour tous les enregistrements, une base par client, par pays etc)
+
+CREATE DATABASE <BaseDeDonnées>
+On peut vérifier que cette dernière s’est bien créer avec la commande SHOW DATABASES.
+Nous allons maintenant créer un utilisateur qui aura le droit d’écrire et de lire dans la base, ce sera cet utilisateur que nous renseignerons dans le fichier de configuration de l’agent chez le client. Il est conseillé pour des questions de sécurité de créer un utilisateur par base.
+
+CREATE USER <Utilisateur> WITH PASSWORD '<MotDePasse>'
+Affectons-lui les droits de lecture et d’écriture sur la table.
+
+GRANT ALL ON <BaseDeDonnées> TO <Utilisateur>
+Pour vérifier que tout s’est correctement passé, vous pouvez rentrer les commandes SHOW USERS et SHOW GRANTS FOR <Utilisateur>.
+
+Nous allons préciser une police de rétention, afin de supprimer automatiquement les données au bout de x heures, jours ou semaines. Dans mon cas je vais supprimer toutes les données de plus d’un an donc 365 jours.
+
+CREATE RETENTION POLICY <Nom_Police> ON <Nom_Base> DURATION <Durée> REPLICATION 1 DEFAULT
+Si vous souhaitez, en cas d’erreur supprimer des droits, un utilisateur ou une base, la commande DROP suivi du nom de la base ou de l’utilisateur permettra de le supprimer et la commande REVOKE [READ,WRITE,ALL] ON <BaseDeDonnées> FROM <Utilisateur> vous permettra de supprimer les droits de votre choix sur une base donnée pour l’utilisateur donné.
+
+
+
+
+
+
+
+
+
 
 Après, il faut démarrer l'exemple de générateur de données pour faire les tests du système avec:
 
@@ -17,15 +104,13 @@ Après, il faut démarrer l'exemple de générateur de données pour faire les t
 
 Et enfin configurer la data source de Grafana au moyen de la copie d'écran:
 
-```
-grafana_configuration_data_source.png
-```
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_data_source.pngz)
+
 
 et finalement configurer un petit dashboard au moyen de la copie d'écran:
 
-```
-grafana_configuration_dashboard.png  
-```
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.pngz)
+
 
 ## Et la suite ?
 Ben, après faut regarder comment cela fonctionne dans le fichier:
@@ -35,19 +120,6 @@ example.sh
 ```
 
 
-## Astuces
-### Partage des sercrets dans ce README !
-Ce qui est bien avec la DB d'InfluxDB, c'est que l'on peut tout gérer via des requêtes *curl* !<br>
-Afin de ne pas partager des secrets dans ce README ;-) les secrets **doivent** être mis **avant** dans des variables d'environnement avec:
-
-```
-export db_u_admin=xxx
-export db_p_admin=yyy
-export db_u_=aaa
-export db_p_=bbb
-
-```
-
 
 
 ### Création d'une nouvelle DB sur InfluxDB via une requête *curl*
@@ -55,13 +127,13 @@ Ne pas oublier de *partager* ses *secrets* !<br>
 Après on peut très facilement *voir* quelles DB nous avons avec:
 
 ```
-curl -i -XPOST "http://www.zuzutest.ml:8086/query?u=$db_u_admin&p=$db_p_admin" --data-urlencode "q=show databases"
+curl -i -XPOST "$srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin" --data-urlencode "q=show databases"
 ```
 
 Puis créer une nouvelle DB avec:
 
 ```
-curl -i -XPOST "http://www.zuzutest.ml:8086/query?u=$db_u_admin&p=$db_p_admin" --data-urlencode "q=CREATE DATABASE tutu"
+curl -i -XPOST "$srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin" --data-urlencode "q=CREATE DATABASE tutu"
 ```
 
 
@@ -73,7 +145,7 @@ L'astuce consiste à la faire tourner (via docker-compose) en *localhost* seulem
 Pour pouvoir y accéder en *remote* il faut simplement créer un tunnel ssh *forward* dessus:
 
 ```
-ssh -L 8888:localhost:8888 ubuntu@www.zuzutest.ml
+ssh -L 8888:localhost:8888 $dbflux_srv_user@$dbflux_srv_host
 ```
 
 Après depuis son *browser* on y accède par:
@@ -93,4 +165,4 @@ https://docs.influxdata.com/influxdb/v1.7/guides/writing_data/
 https://docs.influxdata.com/influxdb/v1.7/tools/shell/
 
 
-zf190809.1149, zf191003.1538
+zf190809.1149, zf191003.1620
