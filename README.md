@@ -64,9 +64,45 @@ source /keybase/xxx...xx/influxdb_secrets.sh
 Ce qui est bien avec la DB d'InfluxDB, c'est que l'on peut tout gérer via des requêtes *curl* !<br>
 Il nous suffit donc de rentrer les commandes suivantes pour:
 
+###
+
+
 ### Création d'un compte administrateur
+
+```
+curl -XPOST "$dbflux_srv_host:$dbflux_port/query?u=toto&p=tutu" --data-urlencode "q=CREATE USER $dbflux_u_admin WITH PASSWORD '$dbflux_p_admin' WITH ALL PRIVILEGES"
+
+curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=show databases"
+
+curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE DATABASE tutu"
+
+curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=show databases"
+
+curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE USER toto WITH PASSWORD 'tutu'"
+
+curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=show USERS"
+
+curl -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=show USERS" | python -m json.tool
+
+
+curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=GRANT ALL ON tutu TO toto"
+
+
+
+
+```
+
+
+
+
+
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin" --data-urlencode "q=show databases"
+
+curl -XPOST '$dbflux_srv_host:$dbflux_port/query' --data-urlencode 'q=CREATE USER $dbflux_u_admin WITH PASSWORD 'dbflux_p_admin' WITH ALL PRIVILEGE'
+
+{"results":[{"statement_id":0}]}
+
 ```
 
 CREATE USER <Utilisateur> WITH PASSWORD '<MotDePasse>' WITH ALL PRIVILEGE
@@ -126,6 +162,7 @@ example.sh
 Ne pas oublier de *partager* ses *secrets* !<br>
 Après on peut très facilement *voir* quelles DB nous avons avec:
 
+
 ```
 curl -i -XPOST "$srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin" --data-urlencode "q=show databases"
 ```
@@ -165,4 +202,4 @@ https://docs.influxdata.com/influxdb/v1.7/guides/writing_data/
 https://docs.influxdata.com/influxdb/v1.7/tools/shell/
 
 
-zf190809.1149, zf191003.1620
+zf190809.1149, zf191004.1045
