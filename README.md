@@ -29,20 +29,31 @@ cat influxdb_secrets.sh
 ---
 #!/bin/bash
 #Petit script pour configurer les secrets utilisés pour le système de monitoring Telegraf/InfluxDB/Grafana
-#zf191003.1608
+#zf191007.1538
 
-#source: générateur de password, https://www.pwdgen.org/
+#utils: générateur de password, https://www.pwdgen.org/
 
-# utilisation:
-# source /Keybase/xx..xx/influxdb_secrets.sh
+
+# UTILISATION:
+
+## Sur le serveur SSH:
+### Il faut ajouter la ligne suivante dans /etc/ssh/sshd_config: AcceptEnv LANG LC_* GIT* EDITOR dbflux_*
+
+## Sur sa machine:
+### Il faut faire: source /Keybase/team/epfl_wwp_blue/influxdb_secrets.sh
+### Puis se connecter avec: ssh -A -o SendEnv="GIT*, dbflux*" user@host
 
 export dbflux_srv_host=xxx
 export dbflux_srv_user=xxx
-export dbflux_port=8086
-export dbflux_u_admin=xxx
+export dbflux_srv_port=8086
+
+export dbflux_u_admin=admin
 export dbflux_p_admin=xxx
-export dbflux_u_=xxx
-export dbflux_p_=xxx
+
+export dbflux_u_user=dbuser
+export dbflux_p_user=xxx
+
+export dbflux_db=xxx
 
 echo -e "
 
@@ -64,46 +75,66 @@ source /keybase/xxx...xx/influxdb_secrets.sh
 Ce qui est bien avec la DB d'InfluxDB, c'est que l'on peut tout gérer via des requêtes *curl* !<br>
 Il nous suffit donc de rentrer les commandes suivantes pour:
 
-###
+
 
 
 ### Création d'un compte administrateur
 
 ```
-curl -XPOST "$dbflux_srv_host:$dbflux_port/query?u=toto&p=tutu" --data-urlencode "q=CREATE USER $dbflux_u_admin WITH PASSWORD '$dbflux_p_admin' WITH ALL PRIVILEGES"
-
-curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=show databases"
-
-curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE DATABASE tutu"
-
-curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=show databases"
-
-curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE USER toto WITH PASSWORD 'tutu'"
-
-curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=show USERS"
-
-curl -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=show USERS" | python -m json.tool
+curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query" --data-urlencode "q=CREATE USER $dbflux_u_admin WITH PASSWORD '$dbflux_p_admin' WITH ALL PRIVILEGES"
+```
 
 
-curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=GRANT ALL ON tutu TO toto"
+### Afficher les bases de données actuelles
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW DATABASES"
+```
+
+
+### Création d'une base de données
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE DATABASE $dbflux_db"
+```
+
+
+### Re-afficher les bases de données actuelles
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW DATABASES"
+```
+
+
+### Création d'un Utilisateur
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE USER $dbflux_u_user WITH PASSWORD '$dbflux_p_user'"
+```
+
+
+### Afficher les utilisateurs actuelles
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW USERS"
+```
+
+#### Sous forme d'un tableau JSON
+```
+curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW USERS" | python -m json.tool
+```
 
 
 
-
+### Attribution d'une base de données à un Utilisateur
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=GRANT ALL ON $dbflux_db TO $dbflux_u_user"
 ```
 
 
 
 
 
-```
-curl -i -XPOST "$dbflux_srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin" --data-urlencode "q=show databases"
 
-curl -XPOST '$dbflux_srv_host:$dbflux_port/query' --data-urlencode 'q=CREATE USER $dbflux_u_admin WITH PASSWORD 'dbflux_p_admin' WITH ALL PRIVILEGE'
 
-{"results":[{"statement_id":0}]}
 
-```
+
+
 
 CREATE USER <Utilisateur> WITH PASSWORD '<MotDePasse>' WITH ALL PRIVILEGE
 Puis une base de données ou seront stockée tous nos enregistrements. Le schéma de stockage que vous souhaitez utilisez reste un choix personnel (Une base pour tous les enregistrements, une base par client, par pays etc)
@@ -202,4 +233,9 @@ https://docs.influxdata.com/influxdb/v1.7/guides/writing_data/
 https://docs.influxdata.com/influxdb/v1.7/tools/shell/
 
 
-zf190809.1149, zf191004.1045
+## Pense bête à zuzu
+cat /keybase/team/epfl_wwp_blue/influxdb_secrets.sh
+
+
+
+zf190809.1149, zf191007.1526
