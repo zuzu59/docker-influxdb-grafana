@@ -5,7 +5,7 @@
 #https://github.com/zuzu59/docker_demo
 
 mkdir influxdb_data chronograf_data grafana_data
-chmod 775 influxdb_data chronograf_data grafana_data
+chmod 777 influxdb_data chronograf_data grafana_data
 
 #docker-compose up
 docker-compose up -d

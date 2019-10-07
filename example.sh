@@ -1,22 +1,33 @@
 #!/bin/bash
-# Time download time for a set of pages
+#Petit script tout con pour générer des série de données dans InfluxDB
+#zf191007.1746
 
-# TODO: do real timing instead of random number ;)
-time_page() {
-  label=$1
-  url=$2
-  t=$(echo "2000 + $RANDOM % 3000" | bc)
-  c=$(echo "$RANDOM % 2" | bc)
-  cat <<__EOF | curl --data-binary @- http://localhost:9091/metrics/job/zuzuresenti/instance/$label
-    # TYPE zuzu_resenti_load_time gauge
-    zuzu_resenti_load_time $t
-    # TYPE zuzu_resenti_page_changed gauge
-    zuzu_resenti_page_changed $c
-__EOF
-}
+p=$(echo "1 + $RANDOM % 10" | bc)
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=$p"
+sleep 3
 
-while true ; do
-  time_page "epflhome"  "https://www.epfl.ch/"
-  time_page "enac"  "https://www.epfl.ch/schools/enac/"
-  sleep 10
-done
+p=$(echo "1 + $RANDOM % 10" | bc)
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=$p"
+sleep 3
+
+p=$(echo "1 + $RANDOM % 10" | bc)
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=$p"
+sleep 3
+
+p=$(echo "1 + $RANDOM % 10" | bc)
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=$p"
+sleep 3
+
+p=$(echo "1 + $RANDOM % 10" | bc)
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=$p"
+sleep 3
+
+p=$(echo "1 + $RANDOM % 10" | bc)
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=$p"
+
+sleep 3
+p=$(echo "1 + $RANDOM % 10" | bc)
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=$p"
+sleep 3
+
+

@@ -139,19 +139,30 @@ curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbf
 Si vous souhaitez, en cas d’erreur supprimer des droits, un utilisateur ou une base, la commande DROP suivi du nom de la base ou de l’utilisateur permettra de le supprimer et la commande REVOKE [READ,WRITE,ALL] ON <BaseDeDonnées> FROM <Utilisateur> vous permettra de supprimer les droits de votre choix sur une base donnée pour l’utilisateur donné.
 
 
+### Tests d'écritures dans la db
+On peut après, quand tout est bien configuré, écrire au moyen d'un simple CURL des données temporelles dans la base de données.
+Par exemple pour écrire la *puissance* du *compteur* numéro 2 dans la table *energy* on fait simplement:
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=7"
+```
 
-
-
-
-
-
-
-
-Après, il faut démarrer l'exemple de générateur de données pour faire les tests du système avec:
-
+On peut aussi faire tourner le petit script d'exemple pour générer quelques données:
 ```
 ./example.sh
 ```
+
+#### On peut voir après les données écrites dans la base de BaseDeDonnées
+Avec cette requête on arrive à voir les données qui se trouvent dans la base de données:
+```
+curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SELECT sum("puissance") AS "sum_puissance" FROM "db1"."autogen"."energy" WHERE time > now() - 5m AND "compteur"='2' GROUP BY time(1s) FILL(none)" | python -m json.tool
+```
+
+
+
+
+
+
+
 
 Et enfin configurer la data source de Grafana au moyen de la copie d'écran:
 
@@ -162,13 +173,6 @@ et finalement configurer un petit dashboard au moyen de la copie d'écran:
 
 ![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.pngz)
 
-
-## Et la suite ?
-Ben, après faut regarder comment cela fonctionne dans le fichier:
-
-```
-example.sh
-```
 
 
 
@@ -205,4 +209,4 @@ cat /keybase/team/epfl_wwp_blue/influxdb_secrets.sh
 
 
 
-zf190809.1149, zf191007.1604
+zf190809.1149, zf191007.1737
