@@ -3,10 +3,6 @@
 Système complet de InfluxDB/Grafana pour pouvoir envoyer des données à InfluxDB via un simple 'curl'.
 
 
-README en cours d'élaboration !
-zf191003.1558
-
-
 ## Installation et utilisation
 Simplement faire:
 
@@ -71,87 +67,75 @@ source /keybase/xxx...xx/influxdb_secrets.sh
 ```
 
 
+
 ## Configuration de la base de données influxdb
 Ce qui est bien avec la DB d'InfluxDB, c'est que l'on peut tout gérer via des requêtes *curl* !<br>
 Il nous suffit donc de rentrer les commandes suivantes pour:
 
 
 
-
 ### Création d'un compte administrateur
-
+Il faudra d’abord se créer un compte administrateur avec la commande suivante.
 ```
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query" --data-urlencode "q=CREATE USER $dbflux_u_admin WITH PASSWORD '$dbflux_p_admin' WITH ALL PRIVILEGES"
 ```
 
 
-### Afficher les bases de données actuelles
-```
-curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW DATABASES"
-```
-
-
 ### Création d'une base de données
+Puis une base de données ou seront stockée tous nos enregistrements. Le schéma de stockage que vous souhaitez utilisez reste un choix personnel (Une base pour tous les enregistrements, une base par client, par pays etc)
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE DATABASE $dbflux_db"
 ```
 
 
-### Re-afficher les bases de données actuelles
+### Afficher les bases de données actuelles
+On peut vérifier que cette dernière s’est bien créer avec la commande:
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW DATABASES"
 ```
 
 
 ### Création d'un Utilisateur
+Nous allons maintenant créer un utilisateur qui aura le droit d’écrire et de lire dans la base, ce sera cet utilisateur que nous renseignerons dans le fichier de configuration de l’agent chez le client. Il est conseillé pour des questions de sécurité de créer un utilisateur par base:
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE USER $dbflux_u_user WITH PASSWORD '$dbflux_p_user'"
 ```
 
 
 ### Afficher les utilisateurs actuelles
+On peut afficher les utilisateur actuels avec la commande:
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW USERS"
 ```
 
 #### Sous forme d'un tableau JSON
+Ou sous forme de tableau JSON plus facile à lire pour un humain:
 ```
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW USERS" | python -m json.tool
 ```
 
 
-
-### Attribution d'une base de données à un Utilisateur
+### Attribution d'une base de données à un utilisateur
+Affectons-lui les droits de lecture et d’écriture sur la table.
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=GRANT ALL ON $dbflux_db TO $dbflux_u_user"
 ```
 
+#### Vérifier les privilège pour cet utilisateur
+On peut afficher les privilège pour cet utilisateur avec la commande:
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW GRANTS FOR $dbflux_u_user"
+```
 
 
-
-
-
-
-
-
-
-
-CREATE USER <Utilisateur> WITH PASSWORD '<MotDePasse>' WITH ALL PRIVILEGE
-Puis une base de données ou seront stockée tous nos enregistrements. Le schéma de stockage que vous souhaitez utilisez reste un choix personnel (Une base pour tous les enregistrements, une base par client, par pays etc)
-
-CREATE DATABASE <BaseDeDonnées>
-On peut vérifier que cette dernière s’est bien créer avec la commande SHOW DATABASES.
-Nous allons maintenant créer un utilisateur qui aura le droit d’écrire et de lire dans la base, ce sera cet utilisateur que nous renseignerons dans le fichier de configuration de l’agent chez le client. Il est conseillé pour des questions de sécurité de créer un utilisateur par base.
-
-CREATE USER <Utilisateur> WITH PASSWORD '<MotDePasse>'
-Affectons-lui les droits de lecture et d’écriture sur la table.
-
-GRANT ALL ON <BaseDeDonnées> TO <Utilisateur>
-Pour vérifier que tout s’est correctement passé, vous pouvez rentrer les commandes SHOW USERS et SHOW GRANTS FOR <Utilisateur>.
-
+### Mettre une police de rétention aux données
 Nous allons préciser une police de rétention, afin de supprimer automatiquement les données au bout de x heures, jours ou semaines. Dans mon cas je vais supprimer toutes les données de plus d’un an donc 365 jours.
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE RETENTION POLICY <Nom_Police> ON <Nom_Base> DURATION <Durée> REPLICATION 1 DEFAULT"
+```
 
-CREATE RETENTION POLICY <Nom_Police> ON <Nom_Base> DURATION <Durée> REPLICATION 1 DEFAULT
+
+### Que faire en cas d'erreur ?
 Si vous souhaitez, en cas d’erreur supprimer des droits, un utilisateur ou une base, la commande DROP suivi du nom de la base ou de l’utilisateur permettra de le supprimer et la commande REVOKE [READ,WRITE,ALL] ON <BaseDeDonnées> FROM <Utilisateur> vous permettra de supprimer les droits de votre choix sur une base donnée pour l’utilisateur donné.
 
 
@@ -189,25 +173,7 @@ example.sh
 
 
 
-### Création d'une nouvelle DB sur InfluxDB via une requête *curl*
-Ne pas oublier de *partager* ses *secrets* !<br>
-Après on peut très facilement *voir* quelles DB nous avons avec:
-
-
-```
-curl -i -XPOST "$srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin" --data-urlencode "q=show databases"
-```
-
-Puis créer une nouvelle DB avec:
-
-```
-curl -i -XPOST "$srv_host:$dbflux_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin" --data-urlencode "q=CREATE DATABASE tutu"
-```
-
-
-
-
-### Utilisation de la console Chronograf en remote
+## Utilisation de la console Chronograf en remote
 La console web, Chronograf, d'administration de la DB InfluxDB n'a pas de *login* pour sécuriser l'accès et que le serveur se trouve sur Internet (c'est le but), cette console se retrouve sur Internet sans protection.<br>
 L'astuce consiste à la faire tourner (via docker-compose) en *localhost* seulement !<br>
 Pour pouvoir y accéder en *remote* il faut simplement créer un tunnel ssh *forward* dessus:
@@ -231,6 +197,7 @@ https://docs.influxdata.com/influxdb/v1.7/administration/authentication_and_auth
 https://docs.influxdata.com/influxdb/v1.7/tools/api/#write-http-endpoint
 https://docs.influxdata.com/influxdb/v1.7/guides/writing_data/
 https://docs.influxdata.com/influxdb/v1.7/tools/shell/
+https://theogindre.fr/2018/02/16/mise-en-place-dune-stack-de-monitoring-avec-influxdb-grafana-et-telegraf/
 
 
 ## Pense bête à zuzu
@@ -238,4 +205,4 @@ cat /keybase/team/epfl_wwp_blue/influxdb_secrets.sh
 
 
 
-zf190809.1149, zf191007.1526
+zf190809.1149, zf191007.1604
