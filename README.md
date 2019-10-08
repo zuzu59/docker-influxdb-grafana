@@ -145,14 +145,19 @@ Par exemple pour écrire la *puissance* du *compteur* numéro 2 dans la table *e
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=7"
 ```
+On n'a pas besoin de mettre le *timestamp* car InfluxDB enregistre l'heure où l'écriture est arrivée.<br>
+Mais il y a moyen de *fixer* le timestamp en l'indiquant en *temps Unix* en nanosecondes à la fin.
+ ```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "energy,compteur=2 puissance=7 $(date +%s%N)"
+```
 
 On peut aussi faire tourner le petit script d'exemple pour générer quelques données:
 ```
 ./example.sh
 ```
 
-#### On peut voir après les données écrites dans la base de BaseDeDonnées
-Avec cette requête on arrive à voir les données qui se trouvent dans la base de données:
+### Tests de lecture après les données écrites dans la base de BaseDeDonnées
+Avec cette requête on arrive à *voir* les données qui se trouvent dans la base de données, ici dans les 5 dernières minutes:
 ```
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SELECT sum("puissance") AS "sum_puissance" FROM "db1"."autogen"."energy" WHERE time > now() - 5m AND "compteur"='2' GROUP BY time(1s) FILL(none)" | python -m json.tool
 ```
