@@ -2,19 +2,12 @@
 #Petit script pour enregistrer des durées d'exécution de scripts dans InfluxDB
 #zf191008.1119
 
-#test si l'argument est vide
-if [ -z "$1" ]
-  then
-    echo -e "\nUsage: ./test_record_script.sh nom_du_test durée_du_test \n\n"
-    exit
-fi
 
-
-echo "start....$1"
+echo "start...."
 t1=$(date +%s%N)
-sleep $2
+sleep 1.5
 t2=$(date +%s%N)
-echo "stop...$1"
+echo "stop..."
 
 t21=$(echo "($t2 - $t1)/1000000000" | bc -l)
 
