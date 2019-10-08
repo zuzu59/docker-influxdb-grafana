@@ -1,6 +1,6 @@
 # InfluxDB & Grafana sur Docker avec push en curl des datas
 
-Système complet de InfluxDB/Grafana pour pouvoir envoyer des données à InfluxDB via un simple 'curl'.
+Système complet de InfluxDB/Grafana pour pouvoir envoyer des données temporelles à InfluxDB via un simple 'curl'.
 
 
 ## Installation et utilisation
@@ -10,15 +10,32 @@ Simplement faire:
 ./start.sh
 ```
 
-Pour l'arrêter sans effacer les données
+**ATTENTION:**
+N'oubliez pas **RAPIDEMENT** d'aller changer le password par défault (admin) du compte admin de Grafana !
+
+Et... de faire **tourner une seule fois le script**:
+
+```
+./configure_influxdb.sh
+```
+ afin de configurer le compte admin de InfluxDB !
+
+
+Pour l'arrêter sans effacer les données:
 ```
 ./stop.sh
 ```
 
+Pour tout purger, y compris les données:
+```
+./purge.sh
+```
+
+
 
 ## Astuces
 ### Partage des secrets dans ce README !
-Afin de ne pas partager des secrets dans ce README ;-) les secrets **doivent** être mis **avant** dans des variables d'environnement avec ce petit script que l'on gardera dans son Keypass préféré:
+Afin de ne pas partager des secrets dans ce README ;-) les secrets **doivent** être mis **avant** dans des *variables d'environnement* avec ce petit script que l'on gardera dans son *Keypass* préféré:
 
 ```
 cat influxdb_secrets.sh
@@ -66,12 +83,30 @@ Après il suffira, juste avant d'utiliser ces exemples, de faire un:
 source /keybase/xxx...xx/influxdb_secrets.sh
 ```
 
+Et si on se trouve sur une machine distante:
+```
+ssh -A -o SendEnv="GIT*, dbflux*" czufferey@noc-tst.idev-fsd.ml
+env |grep dbflux
+ssh-add -l
+```
+
+Il faudra aussi modifier ceci dans **/etc/ssh/sshd_config** sur la machine *remote* !
+```
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_* GIT* EDITOR dbflux_*
+```
+
 
 
 ## Configuration de la base de données influxdb
 Ce qui est bien avec la DB d'InfluxDB, c'est que l'on peut tout gérer via des requêtes *curl* !<br>
 Il nous suffit donc de rentrer les commandes suivantes pour:
 
+**REMARQUE:**
+On peut, pour se simplifier la vie, simplement faire *tourner* ce petit script pour configurer Influx DB selon les paramètres que l'on a indiqués dans les *secrets*:
+```
+./configure_influxdb.sh
+```
 
 
 ### Création d'un compte administrateur
@@ -164,21 +199,15 @@ curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux
 
 
 
-
-
-
-
-
+## Configuration et utilisation de grafana
+### Configuration de la data source
 Et enfin configurer la data source de Grafana au moyen de la copie d'écran:
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_data_source.gif)
 
-![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_data_source.pngz)
 
-
-et finalement configurer un petit dashboard au moyen de la copie d'écran:
-
+### Configuration d'un petit dashboard
+Et finalement configurer un petit dashboard au moyen de la copie d'écran:
 ![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.pngz)
-
-
 
 
 
@@ -210,8 +239,25 @@ https://theogindre.fr/2018/02/16/mise-en-place-dune-stack-de-monitoring-avec-inf
 
 
 ## Pense bête à zuzu
+Il faut modifier ceci dans /etc/ssh/sshd_config sur la machine remote !
+```
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_* GIT* EDITOR dbflux_*
+```
+
+```
 cat /keybase/team/epfl_wwp_blue/influxdb_secrets.sh
+```
+
+```
+source /Keybase/team/epfl_wwp_blue/influxdb_secrets.sh
+ssh -A -o SendEnv="GIT*, dbflux*" czufferey@noc-tst.idev-fsd.ml
+env |grep dbflux
+ssh-add -l
+```
 
 
 
-zf190809.1149, zf191007.1737
+
+
+zf190809.1149, zf19108.1717
