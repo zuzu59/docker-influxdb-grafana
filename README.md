@@ -207,8 +207,7 @@ Et enfin configurer la data source de Grafana au moyen de la copie d'écran:
 
 ### Configuration d'un petit dashboard
 Et finalement configurer un petit dashboard au moyen de la copie d'écran:
-![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.pngz)
-
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.gif)
 
 
 ## Utilisation de la console Chronograf en remote
@@ -260,4 +259,4 @@ ssh-add -l
 
 
 
-zf190809.1149, zf19108.1717
+zf190809.1149, zf19109.1715
