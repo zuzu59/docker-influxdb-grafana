@@ -130,7 +130,7 @@ curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbf
 ```
 
 
-### Création d'un Utilisateur
+### Création d'un utilisateur
 Nous allons maintenant créer un utilisateur qui aura le droit d’écrire et de lire dans la base, ce sera cet utilisateur que nous renseignerons dans le fichier de configuration de l’agent chez le client. Il est conseillé pour des questions de sécurité de créer un utilisateur par base:
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=CREATE USER $dbflux_u_user WITH PASSWORD '$dbflux_p_user'"
@@ -191,7 +191,7 @@ On peut aussi faire tourner le petit script d'exemple pour générer quelques do
 ./example.sh
 ```
 
-### Tests de lecture après les données écrites dans la base de BaseDeDonnées
+### Tests de lecture après les données écrites dans la base de données
 Avec cette requête on arrive à *voir* les données qui se trouvent dans la base de données, ici dans les 5 dernières minutes:
 ```
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SELECT sum("puissance") AS "sum_puissance" FROM "db1"."autogen"."energy" WHERE time > now() - 5m AND "compteur"='2' GROUP BY time(1s) FILL(none)" | python -m json.tool
@@ -235,6 +235,7 @@ https://docs.influxdata.com/influxdb/v1.7/tools/api/#write-http-endpoint
 https://docs.influxdata.com/influxdb/v1.7/guides/writing_data/
 https://docs.influxdata.com/influxdb/v1.7/tools/shell/
 https://theogindre.fr/2018/02/16/mise-en-place-dune-stack-de-monitoring-avec-influxdb-grafana-et-telegraf/
+https://blog.octo.com/monitorer-votre-infra-avec-telegraf-influxdb-et-grafana/
 
 
 ## Pense bête à zuzu
@@ -259,4 +260,4 @@ ssh-add -l
 
 
 
-zf190809.1149, zf19109.1715
+zf190809.1149, zf191010.0845
