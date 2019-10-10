@@ -95,6 +95,10 @@ Il faudra aussi modifier ceci dans **/etc/ssh/sshd_config** sur la machine *remo
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_* GIT* EDITOR dbflux_*
 ```
+Puis redémarrer le service sshd avec:
+```
+sudo systemctl restart sshd.service
+```
 
 
 
@@ -260,4 +264,4 @@ ssh-add -l
 
 
 
-zf190809.1149, zf191010.0845
+zf190809.1149, zf191010.1049
