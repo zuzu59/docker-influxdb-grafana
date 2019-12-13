@@ -214,6 +214,31 @@ Et finalement configurer un petit dashboard au moyen de la copie d'écran:
 ![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.gif)
 
 
+
+
+
+
+
+### Configuration d'un dashboard plus complet
+On peut configurer un dashboard nettement plus complet en utilisant les *variables* du *dashboard*, quelques copies d'écran pour aider:
+
+
+
+
+
+
+
+
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.gif)
+
+
+
+
+
+
+
+
+
 ## Utilisation de la console Chronograf en remote
 La console web, Chronograf, d'administration de la DB InfluxDB n'a pas de *login* pour sécuriser l'accès et que le serveur se trouve sur Internet (c'est le but), cette console se retrouve sur Internet sans protection.<br>
 L'astuce consiste à la faire tourner (via docker-compose) en *localhost* seulement !<br>
@@ -264,4 +289,4 @@ ssh-add -l
 
 
 
-zf190809.1149, zf191010.1049
+zf190809.1149, zf191213.1026
