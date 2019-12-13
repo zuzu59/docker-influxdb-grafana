@@ -214,29 +214,36 @@ Et finalement configurer un petit dashboard au moyen de la copie d'écran:
 ![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.gif)
 
 
-
-
-
-
-
 ### Configuration d'un dashboard plus complet
-On peut configurer un dashboard nettement plus complet en utilisant les *variables* du *dashboard*, quelques copies d'écran pour aider:
+On peut configurer un dashboard nettement plus complet en utilisant les *variables* du *dashboard*, cela permet de pouvoir filtrer certaines données par rapport à d'autres d'un simple clic.
 
 
+#### Définition d'une *variable* du *dashboard*
+Soit des données dans InfluxDB avec une *table* (ansible_logs), 3x *keys* (instance, action et task) et une valeur avec cette commande *curl*:
+
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_u_user&p=$dbflux_p_user"  --data-binary "ansible_logs,instance=_srv_www_www.epfl.ch_htdocs_about,action=fatal,task=reactivate_plu
+gins time_duration=3.465027072 1576166999008749056"
+```
+
+Il faudra utiliser cette requête où **db1** est la *base de donnée* sur InfluxDB et **instance** est la *key* a utiliser pour la *variable*
+```
+SHOW TAG VALUES ON "db1" WITH KEY = "instance"
+```
+
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_variables.gif)
 
 
+#### Utilisation des *variables* du *dashboard*
+Après avoir défini les *variables* il faut les *utiliser* dans le *dashboard
+
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_utilisation_variables.gif)
 
 
+#### Configuration du *tableau* du *dashboard*
+Quand on a beaucoup de *keys* les légendes deviennent très rapidement inutilisables et le but c'est justement de pouvoir *activer* ou *désactiver* certaines *keys* en cliquant dessus avec la touche *CTRL* en même temps
 
-
-![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_dashboard.gif)
-
-
-
-
-
-
-
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_tableau.gif)
 
 
 ## Utilisation de la console Chronograf en remote
@@ -289,4 +296,4 @@ ssh-add -l
 
 
 
-zf190809.1149, zf191213.1026
+zf190809.1149, zf191213.1509
