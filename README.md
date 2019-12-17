@@ -195,10 +195,25 @@ On peut aussi faire tourner le petit script d'exemple pour générer quelques do
 ./example.sh
 ```
 
+
 ### Tests de lecture après les données écrites dans la base de données
 Avec cette requête on arrive à *voir* les données qui se trouvent dans la base de données, ici dans les 5 dernières minutes:
 ```
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SELECT sum("puissance") AS "sum_puissance" FROM "db1"."autogen"."energy" WHERE time > now() - 5m AND "compteur"='2' GROUP BY time(1s) FILL(none)" | python -m json.tool
+```
+
+
+### Effacement d'une *table* dans la db
+On peut effacer toute une table (*MESUREMENT*) pour *purger* des tests par exemple.
+
+Pour lister tables (*MESUREMENTS*) que nous avons dans la DB:
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=SHOW MEASUREMENTS"
+```
+
+Pour effacer la table (*MESUREMENT*) **energy** dans la DB
+```
+curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=DROP MEASUREMENT \"energy\""
 ```
 
 
@@ -296,4 +311,4 @@ ssh-add -l
 
 
 
-zf190809.1149, zf191213.1509
+zf190809.1149, zf191216.1141
