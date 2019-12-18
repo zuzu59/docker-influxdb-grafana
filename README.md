@@ -241,9 +241,9 @@ curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/write?db=$dbflux_db&u=$dbflux_
 gins time_duration=3.465027072 1576166999008749056"
 ```
 
-Il faudra utiliser cette requête où **db1** est la *base de donnée* sur InfluxDB et **instance** est la *key* a utiliser pour la *variable*
+Il faudra utiliser cette requête où **db1** est la *base de donnée* sur InfluxDB, **ansible_logs2** est la *table* et **instance** est la *key* a utiliser pour la *variable*
 ```
-SHOW TAG VALUES ON "db1" WITH KEY = "instance"
+SHOW TAG VALUES  ON "db1" FROM "ansible_logs2" WITH KEY = "instance"
 ```
 
 ![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_variables.gif)
@@ -311,4 +311,4 @@ ssh-add -l
 
 
 
-zf190809.1149, zf191216.1141
+zf190809.1149, zf191218.1734
