@@ -261,6 +261,19 @@ Quand on a beaucoup de *keys* les légendes deviennent très rapidement inutilis
 ![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_configuration_tableau.gif)
 
 
+## Ne pas afficher les mesures erronées
+Il peut arriver que de temps en temps, il se trouve dans la DB des valeurs erronées, hors plage de mesure, dues à une erreur de lecture. C'est très embêtant car cette mesure va complètement fausser le calcul de l'échelle des Y.<br>
+Comme par exemple, on reçoit une température de 150° quand toutes les valeurs sont proches de 14°, du coup l'échelles des Y va se régler en 14° et 150° et on va perdre tous les détails de mesures.<br>
+On peut éviter ce problème en *filtrant* les valeurs à mesurer en faisant ceci:
+
+![Image](https://raw.githubusercontent.com/zuzu59/docker-influxdb-grafana/master/img/grafana_elimination_errors_mesures.gif)
+
+
+
+
+
+
+
 ## Utilisation de la console Chronograf en remote
 La console web, Chronograf, d'administration de la DB InfluxDB n'a pas de *login* pour sécuriser l'accès et que le serveur se trouve sur Internet (c'est le but), cette console se retrouve sur Internet sans protection.<br>
 L'astuce consiste à la faire tourner (via docker-compose) en *localhost* seulement !<br>
@@ -311,4 +324,4 @@ ssh-add -l
 
 
 
-zf190809.1149, zf191218.1734
+zf190809.1149, zf191227.0915
