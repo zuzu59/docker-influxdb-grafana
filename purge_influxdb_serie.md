@@ -1,6 +1,6 @@
 Comment purger des séries sur Influxdb de manière sélective ?
 
-zf201230.0036
+zf201230.0055
 
 Après un certain temps de fonctionnement de manière intensive d'InfluxDB, on peut très facilement avoir des dizaines de millions d'enregistrements dans InfluxDB, ce qui conduit inexorablement à la saturation du disque de données sur le serveur InfluxDB.
 
@@ -199,34 +199,5 @@ curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=show SERIES FROM $db_measurement WHERE $db_tag='$db_tag_value' " |jq .
 
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=SELECT count(*) FROM $db_measurement WHERE $db_tag='$db_tag_value'  limit 100" |jq .
-
-
-
-
-
-
-
-
-
-
-
-
-
-SERIES FROM <measurement_name[,measurement_name]> WHERE <tag_key>='<tag_value>'
-
-
-
-curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=show series where bolo_ruru=''" |jq '.' |head -n 30
-
-
-
-
-curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=show SERIES FROM bolo_ruru " |jq .
-
-curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=show SERIES FROM bolo_ruru WHERE capteur='th1' " |jq .
-
-
-
-curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=SELECT count(*) FROM energy WHERE value='nb_waiting_60'  limit 100" |jq .
 
 
