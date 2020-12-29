@@ -1,5 +1,7 @@
 # InfluxDB & Grafana sur Docker avec push en curl des datas
 
+zf190809.1149, zf191227.0915, zf201229.1339
+
 Système complet de InfluxDB/Grafana pour pouvoir envoyer des données temporelles à InfluxDB via un simple 'curl'.
 
 
@@ -33,12 +35,13 @@ Pour tout purger, y compris les données:
 
 
 
+
 ## Astuces
 ### Partage des secrets dans ce README !
 Afin de ne pas partager des secrets dans ce README ;-) les secrets **doivent** être mis **avant** dans des *variables d'environnement* avec ce petit script que l'on gardera dans son *Keypass* préféré:
 
 ```
-cat influxdb_secrets.sh
+cat '/Volumes/Keybase (zuzu)/private/zuzu59/influxdb_secrets.sh'
 ---
 #!/bin/bash
 #Petit script pour configurer les secrets utilisés pour le système de monitoring Telegraf/InfluxDB/Grafana
@@ -53,7 +56,11 @@ cat influxdb_secrets.sh
 ### Il faut ajouter la ligne suivante dans /etc/ssh/sshd_config: AcceptEnv LANG LC_* GIT* EDITOR dbflux_*
 
 ## Sur sa machine:
-### Il faut faire: source /Keybase/team/epfl_wwp_blue/influxdb_secrets.sh
+### Il faut faire: 
+source /Keybase/team/epfl_wwp_blue/influxdb_secrets.sh
+ou 
+source '/Volumes/Keybase (zuzu)/private/zuzu59/influxdb_secrets.sh'
+
 ### Puis se connecter avec: ssh -A -o SendEnv="GIT*, dbflux*" user@host
 
 export dbflux_srv_host=xxx
@@ -80,7 +87,9 @@ echo -e "
 
 Après il suffira, juste avant d'utiliser ces exemples, de faire un:
 ```
-source /keybase/xxx...xx/influxdb_secrets.sh
+source /Keybase/team/epfl_wwp_blue/influxdb_secrets.sh
+ou
+source '/Volumes/Keybase (zuzu)/private/zuzu59/influxdb_secrets.sh'
 ```
 
 Et si on se trouve sur une machine distante:
@@ -324,4 +333,3 @@ ssh-add -l
 
 
 
-zf190809.1149, zf191227.0915
