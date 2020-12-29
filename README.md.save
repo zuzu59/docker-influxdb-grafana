@@ -1,6 +1,6 @@
 # InfluxDB & Grafana sur Docker avec push en curl des datas
 
-zf190809.1149, zf191227.0915, zf201229.1346
+zf190809.1149, zf191227.0915, zf201229.1339
 
 Système complet de InfluxDB/Grafana pour pouvoir envoyer des données temporelles à InfluxDB via un simple 'curl'.
 
@@ -96,7 +96,7 @@ Et si on se trouve sur une machine distante:
 ```
 ssh -A -o SendEnv="GIT*, dbflux*" czufferey@noc-tst.idev-fsd.ml
 ou
-ssh -A -o SendEnv="GIT*, dbflux*" ubuntu@www.zuzu-test.ml
+
 env |grep dbflux
 ssh-add -l
 ```
