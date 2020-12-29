@@ -1,6 +1,6 @@
 # InfluxDB & Grafana sur Docker avec push en curl des datas
 
-zf190809.1149, zf191227.0915, zf201229.1346
+zf190809.1149, zf191227.0915, zf201229.2321
 
 Système complet de InfluxDB/Grafana pour pouvoir envoyer des données temporelles à InfluxDB via un simple 'curl'.
 
@@ -139,7 +139,7 @@ curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbf
 
 
 ### Afficher les bases de données actuelles
-On peut vérifier que cette dernière s’est bien créer avec la commande:
+On peut vérifier que cette dernière s’est bien crée avec la commande:
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW DATABASES"
 ```
@@ -161,7 +161,7 @@ curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbf
 #### Sous forme d'un tableau JSON
 Ou sous forme de tableau JSON plus facile à lire pour un humain:
 ```
-curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW USERS" | python -m json.tool
+curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW USERS" | jq '.'
 ```
 
 
