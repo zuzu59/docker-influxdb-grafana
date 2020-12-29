@@ -1,6 +1,6 @@
 Comment purger des séries sur Influxdb de manière sélective ?
 
-zf201230.0016
+zf201230.0036
 
 Après un certain temps de fonctionnement de manière intensive d'InfluxDB, on peut très facilement avoir des dizaines de millions d'enregistrements dans InfluxDB, ce qui conduit inexorablement à la saturation du disque de données sur le serveur InfluxDB.
 
@@ -16,8 +16,9 @@ L'avantage de InfluxDB, c'est que l'on peut tout gérer via des requêtes CURL, 
 * [Structure des données dans Influxdb](#structure-des-données-dans-influxdb)
 * [Le nom de la base de données](#le-nom-de-la-base-de-données)
   * [Afficher les bases de données actuelles](#afficher-les-bases-de-données-actuelles)
-* [Les séries ou les measurements](#les-séries-ou-les-measurements)
-  * [Afficher les séries de la base de données actuelles](#afficher-les-séries-de-la-base-de-données-actuelles)
+* [Les measurements et les séries](#les-measurements-et-les-séries)
+  * [Afficher les *measurements* de la base de données actuelles](#afficher-les-measurements-de-la-base-de-données-actuelles)
+  * [Afficher les *séries* de la base de données actuelles](#afficher-les-séries-de-la-base-de-données-actuelles)
   * [Afficher seulement une séries de la base de données actuelles](#afficher-seulement-une-séries-de-la-base-de-données-actuelles)
 * [Les tags](#les-tags)
   * [Afficher les tags/values d'une série](#afficher-les-tagsvalues-dune-série)
@@ -109,10 +110,16 @@ On peut vérifier les bases de données qui se trouvent actuellement dans Influx
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin"  --data-urlencode "q=SHOW DATABASES" |jq '.'
 ```
 
-## Les séries ou les measurements
-Dans une base de données sur InfluxDB nous avons des séries ou des measurements.
+## Les measurements et les séries
+Dans une base de données sur InfluxDB nous avons des measurements et des séries.
 
-### Afficher les séries de la base de données actuelles
+### Afficher les *measurements* de la base de données actuelles
+On peut vérifier les bases de données qui se trouvent actuellement dans InfluxDB avec la commande:
+```
+curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=show MEASUREMENTS " |jq '.'
+```
+
+### Afficher les *séries* de la base de données actuelles
 On peut vérifier les bases de données qui se trouvent actuellement dans InfluxDB avec la commande:
 ```
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=show SERIES " |jq '.'
