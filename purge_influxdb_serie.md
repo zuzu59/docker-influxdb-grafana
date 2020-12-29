@@ -1,8 +1,8 @@
 Comment purger des séries sur Influxdb de manière sélective ?
 
-zf201230.0002
+zf201230.0016
 
-Après un certain temps de fonctionnement de manière intensive de InfluxDB, on peut très facilement avoir des dizaines de millions d'enregistrements dans InfluxDB, ce qui conduit inexorablement à la saturation du disque de données sur le serveur InfluxDB.
+Après un certain temps de fonctionnement de manière intensive d'InfluxDB, on peut très facilement avoir des dizaines de millions d'enregistrements dans InfluxDB, ce qui conduit inexorablement à la saturation du disque de données sur le serveur InfluxDB.
 
 Le moment est venu alors de purger les enregistrements inutiles de manière très sélective.
 
@@ -12,6 +12,7 @@ L'avantage de InfluxDB, c'est que l'on peut tout gérer via des requêtes CURL, 
 ## Table of Contents
 * [Astuces](#astuces)
   * [Partage des secrets dans ce petit manuel !](#partage-des-secrets-dans-ce-petit-manuel-)
+  * [Utilisation de Chronograf pour *explorer* Influxdb](#utilisation-de-chronograf-pour-explorer-influxdb)
 * [Structure des données dans Influxdb](#structure-des-données-dans-influxdb)
 * [Le nom de la base de données](#le-nom-de-la-base-de-données)
   * [Afficher les bases de données actuelles](#afficher-les-bases-de-données-actuelles)
@@ -79,6 +80,21 @@ source '/Volumes/Keybase (zuzu)/private/zuzu59/influxdb_secrets.sh'
 ou
 source /Keybase/team/epfl_wwp_blue/influxdb_secrets.sh
 ```
+
+
+### Utilisation de Chronograf pour *explorer* Influxdb
+Il n'y a plus d'interface *web* de gestion d'InfluxDB, c'est maintenant *Chronograf* qui s'en charge. 
+
+*Chronograf* est très pratique pour se *balader* dans InfluxDb afin de pouvoir *découvrir* sa structure de données.
+
+Mais comme dans la version *community édition* on ne peut pas protéger son utilisation au moyen d'un *mot de passe*, on doit *l'isoler* en *local* sur le serveur et d'utiliser un ** pour arriver directement sur le serveur.
+```
+ssh -L 8888:localhost:8888 ubuntu@www.zuzu-test.ml
+```
+Puis après on peut se connecter sur *Chronograf* simplement avec sont browser sur:
+
+http://localhost:8888/
+
 
 
 # Structure des données dans Influxdb

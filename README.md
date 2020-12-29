@@ -1,8 +1,29 @@
 # InfluxDB & Grafana sur Docker avec push en curl des datas
 
-zf190809.1149, zf191227.0915, zf201229.2321
+zf190809.1149, zf191227.0915, zf201230.0014
 
 Système complet de InfluxDB/Grafana pour pouvoir envoyer des données temporelles à InfluxDB via un simple 'curl'.
+
+
+<!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:1 title:1 charForUnorderedList:* -->
+## Table of Contents
+* [Installation et utilisation](#installation-et-utilisation)
+* [Astuces](#astuces)
+  * [Partage des secrets dans ce README !](#partage-des-secrets-dans-ce-readme-)
+* [Configuration de la base de données influxdb](#configuration-de-la-base-de-données-influxdb)
+  * [Création d'un compte administrateur](#création-dun-compte-administrateur)
+  * [Création d'une base de données](#création-dune-base-de-données)
+  * [Afficher les bases de données actuelles](#afficher-les-bases-de-données-actuelles)
+  * [Création d'un utilisateur](#création-dun-utilisateur)
+  * [Afficher les utilisateurs actuelles](#afficher-les-utilisateurs-actuelles)
+    * [Sous forme d'un tableau JSON](#sous-forme-dun-tableau-json)
+  * [Attribution d'une base de données à un utilisateur](#attribution-dune-base-de-données-à-un-utilisateur)
+    * [Vérifier les privilège pour cet utilisateur](#vérifier-les-privilège-pour-cet-utilisateur)
+  * [Mettre une police de rétention aux données](#mettre-une-police-de-rétention-aux-données)
+  * [Que faire en cas d'erreur ?](#que-faire-en-cas-derreur-)
+  * [Tests d'écritures dans la db](#tests-décritures-dans-la-db)
+* [Allow client to pass locale environment variables](#allow-client-to-pass-locale-environment-variables)
+<!-- /TOC -->
 
 
 ## Installation et utilisation
@@ -225,6 +246,17 @@ curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbf
 Pour effacer la table (*MESUREMENT*) **energy** dans la DB
 ```
 curl -i -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=DROP MEASUREMENT \"energy\""
+```
+
+
+### Effacement de manière sélective d'une *série/tag/value*
+Après un certain temps de fonctionnement de manière intensive d'InfluxDB, on peut très facilement avoir des dizaines de millions d'enregistrements dans InfluxDB, ce qui conduit inexorablement à la saturation du disque de données sur le serveur InfluxDB.
+
+Le moment est venu alors de purger les enregistrements inutiles de manière très sélective.
+
+Pour cela, j'ai écrit un petit manuel pour y arriver assez facilement:
+```
+cat purge_influxdb_serie.md
 ```
 
 
