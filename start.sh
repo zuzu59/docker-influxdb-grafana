@@ -1,11 +1,11 @@
 #!/bin/bash
 #Petit script pour démarrer tout le binz
-#zf191008.1640
+#zf191008.1640, zf210102.1449
 #pour installer Docker et Docker compose sur une machine Ubuntu c'est ici:
 #https://github.com/zuzu59/docker_demo
 
 mkdir influxdb_data chronograf_data grafana_data
-chmod 777 influxdb_data chronograf_data grafana_data
+chmod -R 777 influxdb_data chronograf_data grafana_data
 
 #docker-compose up
 docker-compose up -d

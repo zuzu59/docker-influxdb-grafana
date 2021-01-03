@@ -1,4 +1,4 @@
-#zf190809.1118, zf210101.1816
+#zf190809.1118
 
 # sources: https://hub.docker.com/_/influxdb
 
@@ -6,7 +6,7 @@ version: '3'
 
 services:
   influxdb:
-    image: influxdb:1.7.7
+    image: influxdb
     ports: 
       - "8086:8086"
     restart: always
@@ -17,7 +17,7 @@ services:
 
 
   chronograf:
-    image: chronograf:1.7.12
+    image: chronograf
     ports: 
       - "127.0.0.1:8888:8888"
     restart: always
@@ -28,7 +28,7 @@ services:
 
 
   grafana:
-    image: grafana/grafana:6.2.5
+    image: grafana/grafana
     ports:
       - "9092:3000"
     restart: always
