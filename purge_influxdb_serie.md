@@ -1,6 +1,6 @@
 Comment purger des séries sur Influxdb de manière sélective ?
 
-zf201230.0055
+zf210103.1610
 
 Après un certain temps de fonctionnement de manière intensive d'InfluxDB, on peut très facilement avoir des dizaines de millions d'enregistrements dans InfluxDB, ce qui conduit inexorablement à la saturation du disque de données sur le serveur InfluxDB.
 
@@ -28,6 +28,7 @@ L'avantage de InfluxDB, c'est que l'on peut tout gérer via des requêtes CURL, 
 * [Compte le nombre de records de toutes les valeurs d'un tags d'une série](#compte-le-nombre-de-records-de-toutes-les-valeurs-dun-tags-dune-série)
 * [Compte le nombre de records de seulement une valeur d'un tags d'une série](#compte-le-nombre-de-records-de-seulement-une-valeur-dun-tags-dune-série)
 * [Effacement d'une série avec un tag/value !](#effacement-dune-série-avec-un-tagvalue-)
+* [Que faire quand le container docker InfluxDB *prend* encore trop de place sur le disque ?](#que-faire-quand-le-container-docker-influxdb-prend-encore-trop-de-place-sur-le-disque-)
 <!-- /TOC -->
 
 
@@ -178,7 +179,7 @@ curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux
 
 
 # Effacement d'une série avec un tag/value !
-Maintenant que l'on connait bien qui consomme quoi on peut commencer à purger les enregistrement inutiles.
+Maintenant que l'on connaît bien qui consomme quoi on peut commencer à purger les enregistrement inutiles.
 
 ```
 export db_measurement=energy
@@ -199,5 +200,21 @@ curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=show SERIES FROM $db_measurement WHERE $db_tag='$db_tag_value' " |jq .
 
 curl -XPOST "$dbflux_srv_host:$dbflux_srv_port/query?u=$dbflux_u_admin&p=$dbflux_p_admin&db=$dbflux_db"  --data-urlencode "q=SELECT count(*) FROM $db_measurement WHERE $db_tag='$db_tag_value'  limit 100" |jq .
+```
+
+
+# Que faire quand le container docker InfluxDB *prend* encore trop de place sur le disque ?
+Bien que l'on ait *purgé* toutes les séries plus utilisées, la place disque *occupée* par le container docker InfluxDB ne libère pas automatiquement la place. Il faut donc suivre cette procédure pour *purger* la place prise par le container:
+
+**ATENTION !**
+**Il faut être bien certain que les versions des images Docker soient *figées* dans le fichier *docker-compose.yml* AVANT de faire la procédure ?**
+
+```
+./stop.sh
+docker system prune -a -f --volumes
+./start.sh
+```
+
+
 
 
