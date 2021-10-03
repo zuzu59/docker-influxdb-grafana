@@ -1,8 +1,15 @@
-# InfluxDB & Grafana sur Docker avec push en curl des datas
+# InfluxDB Ver 2.x & Grafana sur Docker avec push en curl des datas
 
-zf190809.1149, zf191227.0915, zf201230.0014
+zf190809.1149, zf191227.0915, zf201230.0014, zf211003.1352
 
 Système complet de InfluxDB/Grafana pour pouvoir envoyer des données temporelles à InfluxDB via un simple 'curl'.
+
+
+ATTENTION, CETTE VERSION EST POUR LA VERSION 2.X D'INFLUXDB !
+Et la documentation n'est PAS encore écrite pour la V2.x !
+zf211003.1353
+
+
 
 
 <!-- TOC titleSize:2 tabSpaces:2 depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 skip:1 title:1 charForUnorderedList:* -->
