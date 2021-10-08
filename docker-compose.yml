@@ -1,4 +1,4 @@
-#zf190809.1118, zf210101.1816, zf211003.1424
+#zf190809.1118, zf210101.1816, zf211004.1018
 
 # sources: https://hub.docker.com/_/influxdb
 # sources: https://hub.docker.com/r/grafana/grafana
@@ -30,13 +30,13 @@ services:
 
 
 
-#  grafana:
-#    image: grafana/grafana:8.1.5-ubuntu
-#    ports:
-#      - "9092:3000"
-#    restart: always
-#    volumes:
-#      - $PWD/grafana_data:/var/lib/grafana
+  grafana:
+    image: grafana/grafana:8.1.5-ubuntu
+    ports:
+      - "9092:3000"
+    restart: always
+    volumes:
+      - $PWD/grafana_data:/var/lib/grafana
 
 
 
