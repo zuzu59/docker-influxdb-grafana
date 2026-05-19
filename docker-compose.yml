@@ -1,4 +1,4 @@
-#zf190809.1118, zf210101.1816, zf211004.1018
+#zf190809.1118, zf210101.1816, zf211004.1018, zf260519.1540
 
 # sources: https://hub.docker.com/_/influxdb
 # sources: https://hub.docker.com/r/grafana/grafana
@@ -12,6 +12,10 @@ services:
     ports: 
       - "8086:8086"
     restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     volumes:
 #      - $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro
 #      - $PWD/influxdb_data:/var/lib/influxdb
